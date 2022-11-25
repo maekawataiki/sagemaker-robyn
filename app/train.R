@@ -22,7 +22,19 @@ print("Robyn Version")
 packageVersion("Robyn")
 
 # Read Parameters
-training_params <- read_json(param_path)
+raw_params <- read_json(param_path)
+extract_value <- function(x) {
+  tryCatch({
+    return(fromJSON(x))
+  }, error = function (e) {
+    print(paste0("Failed to parse hyperparameter. Returning the value itself: ", x))
+    return(x)
+  })
+}
+training_params <- list()
+for (key in names(raw_params)) {
+  training_params[[key]] <- extract_value(raw_params[[key]])
+}
 print(training_params)
 
 ## Check simulated dataset or load your own dataset
