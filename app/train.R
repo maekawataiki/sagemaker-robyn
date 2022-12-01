@@ -1,5 +1,8 @@
 # This is sample code with little modification from demo.R
 # Feel free to customize this script as you need.
+# Search this file with "SAGEMAKER_CHANGE" for changed part
+
+# === BEGIN SAGEMAKER_CHANGE: Get Data and Hyperparameter from SageMaker ===
 
 # Parameters
 prefix <- '/opt/ml/'
@@ -51,7 +54,12 @@ print(list.files(holiday_path))
 load(paste0(holiday_path, "dt_prophet_holidays.RData"))
 
 # Directory where you want to export results to (will create new folders)
-robyn_object <- output_data_path
+# model_path exported as model.tar.gz
+# output_data_path exported as output.tar.gz
+robyn_object <- model_path
+
+# === END SAGEMAKER_CHANGE: Get Data and Hyperparameter from SageMaker ===
+
 
 ## -------------------------------- NOTE v3.6.0 CHANGE !!! ---------------------------------- ##
 ## All sign control are now automatically provided: "positive" for media & organic variables
@@ -74,8 +82,8 @@ InputCollect <- robyn_inputs(
   # impressions, GRP etc. If not applicable, use spend instead.
   organic_vars = "newsletter", # marketing activity without media spend
   # factor_vars = c("events"), # force variables in context_vars or organic_vars to be categorical
-  window_start = training_params$window_start,
-  window_end = training_params$window_end,
+  window_start = training_params$window_start, # SAGEMAKER_CHANGE: Example of how to use hyperparameter passed
+  window_end = training_params$window_end, # SAGEMAKER_CHANGE: Example of how to use hyperparameter passed
   adstock = "geometric" # geometric, weibull_cdf or weibull_pdf.
 )
 print(InputCollect)
@@ -274,6 +282,8 @@ if (length(InputCollect$exposure_vars) > 0) {
 ################################################################
 #### Step 3: Build initial model
 
+# SAGEMAKER_CHANGE: This is not SageMaker specific, but reduced iterations and trials for testing
+
 ## Run all trials and iterations. Use ?robyn_run to check parameter definition
 print("Run Robyn")
 OutputModels <- robyn_run(
@@ -412,5 +422,6 @@ if (TRUE) {
   }
 }
 
-## Rest of demo code is omitted because it is related to model refresh. 
+## === SAGEMAKER_CHANGE ===
+## Rest of demo code is omitted because it is for model refresh. 
 ## Feel free to customize this script as you need.
